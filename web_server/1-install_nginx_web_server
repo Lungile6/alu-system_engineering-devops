@@ -1,0 +1,27 @@
+ #!/usr/bin/env bash
+
+# Update package lists and install Nginx
+apt-get update -y
+apt-get install nginx -y
+
+# Configure Nginx to listen on port 80
+sed -i 's/listen 80 default_server;/listen 80;/g' /etc/nginx/sites-available/default
+
+# Create a custom index.html file
+echo "Holberton School for the win!" > /var/www/html/index.html
+
+# Restart Nginx without using systemctl
+service nginx restart
+
+# Ensure Nginx is started
+service nginx start
+
+# Verify the setup
+if curl -s http://localhost | grep -q "Holberton School"; then
+    echo "Nginx is configured correctly."
+else
+    echo "Nginx configuration failed."
+    exit 1
+fi
+
+exit 0
