@@ -22,7 +22,7 @@ EOF
 cat << EOF > /etc/nginx/sites-available/default
 server {
     listen 80;
-    server_name _;
+    uubuntu;
 
     error_page 404 /404.html;
     location = /404.html {
