@@ -6,7 +6,6 @@ sudo ufw allow 'Nginx HTTP'
 
 # Installing an index html file
 sh -c 'echo "Holberton School" > /var/www/html/index.html'
-sed -i '/listen 80 default_server/a rewrite ^/rewrite_me https://www.youtube.com/@
-lungilesixmil permanent;' /etc/nginx/sites-available/default
+sed -i '/listen 80 default_server/a rewrite ^/rewrite_me https://www.youtube.com/@lungilesixmil permanent;' /etc/nginx/sites-available/default
 # Restarting the server with the new config
 service nginx restart
