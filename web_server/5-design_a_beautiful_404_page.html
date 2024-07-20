@@ -1,0 +1,177 @@
+#!/usr/bin/env bash
+# Configure your Nginx server to have a custom 404 page that contains the string `Ceci n'est pas une page`
+
+sudo apt-get update
+sudo apt-get install -y nginx
+
+echo "
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Ceci n'est pas une page</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: linear-gradient(to bottom, #87ceeb, #162c42);
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        .error-container {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-size: 5rem;
+            color: white;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+
+        p {
+            font-size: 2rem;
+            color: white;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+        }
+
+        .stars {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle 2s infinite;
+        }
+
+        .shooting-star {
+            position: absolute;
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0), rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+            transform-origin: left center;
+            animation: shoot 5s linear infinite;
+        }
+
+        .game-container {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .game-container h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .game-container button {
+            background-color: rgba(61, 94, 129, 0.32);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        @keyframes twinkle {
+            0% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+            100% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes shoot {
+            0% {
+                transform: translateX(-100vw) rotate(-45deg);
+                opacity: 0;
+            }
+            10%, 90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(100vw) rotate(-45deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="error-container">
+    <h1>404</h1>
+    <p>Ceci n'est pas une page</p><br>
+    <p>Opps! The page not found.</p>
+</div>
+
+<div class="game-container">
+    <h2>Find the hidden treasure!</h2>
+    <button id="startGame">Start Game</button>
+</div>
+
+<script>
+    const numStars = 100;
+    const starsContainer = document.body;
+
+    for (let i = 0; i < numStars; i++) {
+        const star = document.createElement('div');
+        star.classList.add('stars');
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        star.style.animationDelay = Math.random() * 2 + 's';
+        starsContainer.appendChild(star);
+    }
+
+    const shootingStarContainer = document.createElement('div');
+    shootingStarContainer.classList.add('shooting-star');
+    document.body.appendChild(shootingStarContainer);
+
+    function moveShootingStar() {
+        const star = document.querySelector('.shooting-star');
+        star.style.left = '100vw';
+        star.style.top = Math.random() * 80 + 'vh';
+        star.style.animationDelay = Math.random() * 10 + 's';
+        requestAnimationFrame(moveShootingStar);
+    }
+
+    moveShootingStar();
+
+    const gameContainer = document.querySelector('.game-container');
+    const startGameButton = document.getElementById('startGame');
+
+    startGameButton.addEventListener('click', () => {
+        gameContainer.style.display = 'none';
+        startGame();
+    });
+
+    function startGame() {
+        // Add game logic here
+        alert('You found the hidden treasure!');
+    }
+</script>
+</body>
+</html>" | sudo tee /var/www/html/my404.html
+new_error_page="listen 80 default_server;\n\terror_page 404 \/my404.html;\n\tlocation = \/my404.html {\n\t\troot \/var\/www\/html;\n\t\tinternal;\n\t}"
+sudo sed -i "s|listen 80 default_server;|$new_error_page|" /etc/nginx/sites-enabled/default
+
+sudo service nginx restart
+
+
