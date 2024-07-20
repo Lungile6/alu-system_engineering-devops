@@ -2,24 +2,10 @@
 # Update package lists and install Nginx
 apt-get update -y && apt-get upgrade -y
 apt-get install nginx -y
-sudo ufw allow 'nginx HTTP'
+sudo ufw allow 'Nginx HTTP'
 
 # Installing an index html file
-echo "Holberton School" | sudo tee /var/www/html/index.html
-
-# Altering the server config to create a server
-sudo sh -c 'echo "
-events {
-
-}
-
-http {
-       server {
-               listen 80;
-               index index.html;
-               root /var/www/html;
-        }
-}" > /etc/nginx/nginx.conf'
+sh -c 'echo "Holberton School" > /var/www/html/index.html'
 
 # Restarting the server with the new config
-sudo systemctl restart nginx
+service nginx restart
