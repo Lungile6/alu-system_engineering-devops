@@ -1,11 +1,29 @@
 #!/usr/bin/env bash
-# Update package lists and install Nginx
-apt-get update -y && apt-get upgrade -y
-apt-get install nginx -y
-sudo ufw allow 'Nginx HTTP'
+# Update the package index
 
-# Installing an index html file
-sh -c 'echo "Holberton School" > /var/www/html/index.html'
-sed -i '/listen 80 default_server/a rewrite ^/rewrite_me https://www.youtube.com/@lungilesixmil permanent;' /etc/nginx/sites-available/default
-# Restarting the server with the new config
-service nginx restart
+sudo apt-get update
+
+# Install Nginx
+sudo apt-get install -y nginx
+
+# Create the default index.html page
+echo "Holberton School" | sudo tee /var/www/html/index.html
+
+# Configure the Nginx redirect
+sudo bash -c 'cat << EOF > /etc/nginx/sites-enabled/default
+server {
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
+
+    location /redirect_me {
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
+    }
+}
+EOF'
+
+sudo service nginx restart
