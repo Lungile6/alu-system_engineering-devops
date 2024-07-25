@@ -1,19 +1,35 @@
 #!/usr/bin/env bash
-# Install and configure HAproxy on your lb-01 server.
-# Make sure that HAproxy can be managed via an init script
-sudo apt-get -y update
-sudo apt-get -y install haproxy
+# Set the server hostnames and IP addresses
+WEB01_HOSTNAME="[STUDENT_ID]-web-01"
+WEB01_IP="44.222.202.229"
+WEB02_HOSTNAME="[STUDENT_ID]-web-02"
+WEB02_IP="54.87.50.204"
 
-echo \
-"
+# Check if HAproxy is installed
+if ! command -v haproxy &> /dev/null
+then
+    echo "HAproxy is not installed. Installing now..."
+    sudo apt-get -y update
+    sudo apt-get -y install haproxy
+fi
+
+# Configure HAproxy
+echo "Configuring HAproxy..."
+echo "
 frontend lb-frontend
         bind *:80
         mode http
         default_backend lb-backend
 backend lb-backend
         balance roundrobin
-        server web-01 44.222.202.229 check
-        server web-02 54.87.50.204 check
-" | sudo tee -a /etc/haproxy/haproxy.cfg
-echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
+        server $WEB01_HOSTNAME $WEB01_IP check
+        server $WEB02_HOSTNAME $WEB02_IP check
+" | sudo tee /etc/haproxy/haproxy.cfg
+
+# Enable HAproxy service
+echo "Enabling HAproxy service..."
+echo "ENABLED=1" | sudo tee /etc/default/haproxy
+
+# Restart HAproxy service
+echo "Restarting HAproxy service..."
 sudo service haproxy restart
