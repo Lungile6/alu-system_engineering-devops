@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 # Set the server hostnames and IP addresses
-WEB01_HOSTNAME="[STUDENT_ID]-web-01"
+WEB01_HOSTNAME="6145-web-01"
 WEB01_IP="44.222.202.229"
-WEB02_HOSTNAME="[STUDENT_ID]-web-02"
+WEB02_HOSTNAME="6145-web-02"
 WEB02_IP="54.87.50.204"
 
 # Check if HAproxy is installed
