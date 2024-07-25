@@ -22,8 +22,8 @@ frontend lb-frontend
         default_backend lb-backend
 backend lb-backend
         balance roundrobin
-        server $WEB01_HOSTNAME $WEB01_IP check
-        server $WEB02_HOSTNAME $WEB02_IP check
+        server $WEB01_HOSTNAME $WEB01_IP:80 check
+        server $WEB02_HOSTNAME $WEB02_IP:80 check
 " | sudo tee /etc/haproxy/haproxy.cfg
 
 # Enable HAproxy service
