@@ -21,6 +21,7 @@ frontend lb-frontend
         mode http
         default_backend lb-backend
 backend lb-backend
+        mode http
         balance roundrobin
         server $WEB01_HOSTNAME $WEB01_IP:80 check
         server $WEB02_HOSTNAME $WEB02_IP:80 check
